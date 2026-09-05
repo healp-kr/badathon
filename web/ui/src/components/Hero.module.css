@@ -1,0 +1,46 @@
+/* 유형 카드 — 딥그린 단일 계열.
+   이전의 초록→청록→파랑 그라데이션은 그린 3단 위계를 흐려서 계열을 하나로 모았다.
+   흰 글자를 얹으므로 밝은 끝도 --accent-solid 아래로 유지한다(대비 4.6:1 이상). */
+.hero {
+  border-radius: var(--radius-lg);
+  padding: 22px 20px;
+  margin-bottom: 14px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--brand-deep) 0%, #0a6b41 100%);
+}
+
+/* 소형 라벨 하한 15px — 노인 사용자 전제라 13px 로 내리지 않는다.
+   uppercase 는 한글에 효과가 없고 영문 혼용 시 가독성만 떨어뜨려 뺐다. */
+.eyebrow {
+  font-size: var(--font-sm);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  opacity: 0.9;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.sub {
+  font-size: 17px;
+  font-weight: 600;
+  opacity: 0.95;
+  margin-top: 6px;
+}
+
+.desc {
+  font-size: 15px;
+  opacity: 0.9;
+  margin-top: 10px;
+  line-height: 1.55;
+}
+
+.desc b { font-weight: 800; }
+
+.compact { padding: 16px 20px; }
+.compact .title { font-size: 22px; }

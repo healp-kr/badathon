@@ -1,0 +1,105 @@
+/* 전역 기본 — 리셋, 타이포, 앱 셸.
+ *
+ * 컴포넌트 고유의 모양은 각 컴포넌트 옆의 `*.module.css` 로 간다.
+ * 여기 남는 것은 "모든 화면이 공유하는 것" 뿐이다.
+ */
+
+* { box-sizing: border-box; }
+
+/* 컬러 밴드 + 흰 캔버스 — 회색 페이지 배경은 쓰지 않는다.
+   색은 상단 밴드와 카드가 지고, 본문 바탕은 흰색으로 둔다. */
+body {
+  margin: 0;
+  padding: 0 0 var(--tabbar-h);
+  background: var(--bg);
+  color: var(--ink);
+  font: var(--font-body) / 1.6 system-ui, -apple-system, 'Segoe UI',
+        'Malgun Gothic', sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+#root { min-height: 100vh; }
+
+main {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* 상단 밴드는 좌우 여백을 무시하고 화면 끝까지 찬다.
+   main 의 패딩을 상쇄하되 --page-max 폭 제한 안에서만 흐른다. */
+.bleed {
+  margin-left: -16px;
+  margin-right: -16px;
+}
+
+/* ---------- 타이포 ---------- */
+
+h1 {
+  font-size: 27px;
+  line-height: 1.3;
+  margin: 0 0 10px;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+
+h2 {
+  font-size: 21px;
+  margin: 26px 0 10px;
+  letter-spacing: -0.015em;
+  font-weight: 800;
+}
+
+h3 { font-size: var(--font-body); margin: 0 0 4px; font-weight: 700; }
+
+p { margin: 0 0 12px; }
+
+.muted { color: var(--muted); font-size: var(--font-sm); }
+.note  { color: var(--muted); font-size: var(--font-sm); }
+.fine  { font-size: var(--font-fine); line-height: 1.55; }
+
+/* ---------- 접근성 ---------- */
+
+/* 화면에는 안 보이되 스크린리더에는 읽히는 텍스트 */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 키보드 포커스는 지우지 않는다 */
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* 애니메이션을 원치 않는 사용자 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- 공통 조각 ---------- */
+
+.loading {
+  padding: 48px 0;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* 캐러셀 위에 붙는 작은 섹션 헤더 */
+.sec {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 24px 2px 10px;
+}
+.sec h2 { margin: 0; font-size: 20px; }

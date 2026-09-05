@@ -1,0 +1,19 @@
+# 런타임에 실제로 필요한 것만. 임포트를 전수 추적해 뽑았다.
+#
+# 정적 배포(GitHub Pages)에서 파이썬은 **빌드 시점에만** 쓰인다 —
+# 엔진 데이터 변환(tools/make_engine_data.py)과 날씨 갱신(tools/fetch_context.py).
+# 배포된 사이트에는 파이썬이 없다.
+#
+#   pip install -r requirements.txt
+#
+# `analysis/` 재현 스크립트는 scipy·openpyxl 도 쓰지만 런타임에는 필요 없다.
+# `recommendation/make_metric_charts.py` 의 matplotlib 도 마찬가지다.
+
+numpy==2.5.1
+pandas==3.0.5
+requests==2.34.2
+
+# 아래 둘은 예전 FastAPI 백엔드용이다. 정적화(2026-09-05) 이후로는 쓰이지 않지만,
+# `web/main.py` 를 되살려 서버로 돌리고 싶을 때를 위해 남겨 둔다.
+# fastapi==0.141.1
+# uvicorn==0.52.2

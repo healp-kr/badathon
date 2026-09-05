@@ -1,0 +1,128 @@
+# GitHub Pages 배포 — 빌드·검증·배포와 날씨 갱신을 한 파일에 둔다.
+#
+# 왜 한 파일인가: Actions 가 `GITHUB_TOKEN` 으로 만든 커밋은 **다른 워크플로를
+# 트리거하지 않는다**(무한 루프 방지). 날씨 갱신과 배포를 따로 두면 매시간 갱신은
+# 되는데 배포가 안 돼서, 사이트에는 영원히 첫 배포 시점의 날씨가 남는다.
+#
+# 트리거 셋:
+#   push       코드를 고쳤을 때. 날씨는 건드리지 않는다
+#   schedule   매시 15분. 날씨를 새로 받아 커밋하고 그대로 배포한다
+#   dispatch   손으로 돌릴 때 (Actions 탭 → Run workflow)
+#
+# 스케줄 워크플로는 저장소가 60일간 조용하면 자동으로 꺼진다. 이 워크플로는 매시간
+# 스스로 커밋하므로 그 조건에 걸리지 않는다 — 다만 공모전 심사 기간이 길다면
+# Actions 탭에서 한 번씩 살아 있는지 확인하는 편이 안전하다.
+
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # 기상청 초단기예보가 매시 30분 발표라, 그 전에 받아 봐야 같은 값이다.
+    # 15분에 돌려 직전 발표분을 확실히 잡는다. UTC 기준이지만 매시간이라 무관하다.
+    - cron: '15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write # 날씨 파일 커밋
+  pages: write
+  id-token: write
+
+# 배포는 한 번에 하나만. 스케줄과 push 가 겹쳐도 뒤엣것이 이긴다.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # ── 1. 날씨 갱신 ────────────────────────────────────────────────────
+  # 스케줄·수동 실행에서만 돈다. 실패해도 배포를 막지 않는다 —
+  # 인증키가 만료돼도 추천·지도·기록은 그대로 동작해야 한다는 원칙 그대로다.
+  context:
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - run: pip install requests
+
+      - name: 환경 컨텍스트 조회
+        env:
+          KMA_SERVICE_KEY_DECODED: ${{ secrets.KMA_SERVICE_KEY_DECODED }}
+          KMA_SERVICE_KEY_ENCODED: ${{ secrets.KMA_SERVICE_KEY_ENCODED }}
+        run: python tools/fetch_context.py
+
+      - name: 바뀐 것이 있으면 커밋
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add web/ui/public/context
+          if git diff --cached --quiet; then
+            echo '날씨가 그대로다 — 커밋하지 않는다'
+          else
+            git commit -m '날씨 갱신 (자동)'
+            git push
+          fi
+
+  # ── 2. 빌드·검증·배포 ───────────────────────────────────────────────
+  build:
+    needs: [context]
+    # context 를 건너뛰었어도(push) 돌아야 하고, 실패했어도 돌아야 한다
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # 방금 job 1 이 밀어 넣은 날씨 커밋을 받아야 한다
+          ref: ${{ github.ref }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+
+      # 엔진 데이터를 CSV·파라미터에서 다시 만든다. 원본이 유일한 출처라는 뜻이고,
+      # `web/schema.py` 의 모델 범주 대조가 여기서 돈다 —
+      # 설문 선택지가 모델과 어긋나면 **빌드가 실패한다**. 어긋난 채로 배포될 수 없다.
+      - name: 엔진 데이터 생성
+        run: python tools/make_engine_data.py
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: web/ui/package-lock.json
+      - run: npm ci
+        working-directory: web/ui
+
+      # 정답지(tests/golden/)는 파이썬 엔진이 만든 것이고 저장소에 커밋돼 있다.
+      # **여기서 다시 만들지 않는다** — 다시 만들면 검증이 자기 자신을 비교하게 된다.
+      # 파라미터나 규칙을 고쳤다면 로컬에서 tools/make_golden*.py 를 돌려 커밋할 것.
+      - name: 골든 검증 (TS 엔진이 파이썬과 같은가)
+        run: node tests/run.mjs
+        working-directory: web/ui
+
+      - run: npm run typecheck
+        working-directory: web/ui
+
+      - run: npm run build
+        working-directory: web/ui
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/ui/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,36 @@
+.tile {
+  flex: 0 0 154px;
+  scroll-snap-align: start;
+  background: none;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cover {
+  width: 154px;
+  height: 154px;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: flex-end;
+  padding: 12px;
+  color: #fff;
+  font-weight: 800;
+  font-size: 17px;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  word-break: keep-all;
+}
+
+.cap {
+  display: block;
+  margin-top: 8px;
+  font-size: var(--font-sm);
+  color: var(--muted);
+}
+
+.cap b {
+  color: var(--ink);
+  font-weight: 700;
+}

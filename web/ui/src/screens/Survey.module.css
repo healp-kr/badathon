@@ -1,0 +1,13 @@
+.progress {
+  height: 5px;
+  background: var(--surface-2);
+  border-radius: 999px;
+  margin-bottom: 18px;
+}
+
+.progress > div {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 0.2s;
+}

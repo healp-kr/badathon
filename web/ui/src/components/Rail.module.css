@@ -1,0 +1,38 @@
+.rail {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding: 2px 16px 8px;
+  margin: 0 -16px;                 /* 가장자리까지 흐르게 */
+  -webkit-overflow-scrolling: touch;
+}
+
+.rail::-webkit-scrollbar { height: 0; }
+
+/* 페이지 인디케이터 — 활성은 긴 바, 비활성은 점 */
+.dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 2px 0 4px;
+  height: 12px;
+}
+
+.dot,
+.active {
+  height: 6px;
+  border-radius: var(--radius-pill);
+  transition: width 0.2s, background-color 0.2s;
+}
+
+.dot {
+  width: 6px;
+  background: var(--surface-2);
+}
+
+.active {
+  width: 22px;
+  background: var(--accent);
+}

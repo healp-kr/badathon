@@ -1,0 +1,57 @@
+.wrap {
+  position: relative;
+  width: 190px;
+  margin: 12px auto 4px;
+}
+
+.ring {
+  width: 190px;
+  height: 190px;
+  display: block;
+}
+
+.track {
+  fill: none;
+  stroke: var(--surface-2);
+  stroke-width: 12;
+}
+
+.bar {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 12;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+/* 숫자와 단위를 베이스라인으로 붙이고, 그 줄 전체를 원 가운데에 놓는다.
+   inset:0 + align-items:center 로 하면 단위가 원 바닥으로 떨어진다. */
+.text {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 3px;
+}
+
+.text b {
+  font-size: 46px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.text span {
+  font-size: 18px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.caption {
+  text-align: center;
+  margin-top: 0;
+}

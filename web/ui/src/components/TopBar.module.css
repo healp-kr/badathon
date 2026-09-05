@@ -1,0 +1,56 @@
+/* 앱바 — 딥그린 밴드. 그린 3단 위계의 1단이다.
+   상태바 영역까지 색이 차도록 safe-area 만큼 위를 더 준다. */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--brand-deep);
+  padding: calc(10px + env(safe-area-inset-top)) 16px 10px;
+}
+
+.bar {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* 워드마크는 흰색. 딥그린 위 대비 7.5:1 */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 19px;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--brand-lime);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand-deep);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+/* 지역 칩 — 흰 배경 필 */
+.chip {
+  font: inherit;
+  font-size: var(--font-sm);
+  font-weight: 700;
+  background: #fff;
+  border: 0;
+  border-radius: var(--radius-pill);
+  padding: 10px 16px;
+  min-height: var(--tap-min);
+  color: var(--brand-deep);
+  cursor: pointer;
+}

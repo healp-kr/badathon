@@ -1,0 +1,97 @@
+/* 선택 행 패턴. 상태는 채움이 아니라 테두리로 말한다 —
+   선택 시 배경은 흰색을 유지하고 초록 1.5px 테두리만 두른다. */
+.sport {
+  border: 1.5px solid transparent;
+  border-top-color: var(--line);
+  border-radius: var(--radius);
+  padding: 12px 0;
+  margin: 0 -12px;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.sport:first-of-type { border-top-color: transparent; }
+
+.selected {
+  border-color: var(--accent);
+  background: #fff;
+}
+
+/* 행 본체 전체가 상세로 가는 버튼이다 */
+.head {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  width: 100%;
+  background: none;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.thumb {
+  flex: 0 0 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 900;
+  font-size: 20px;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+  display: block;
+}
+
+/* 크기가 아니라 굵기로 위계를 낸다 */
+.name {
+  display: block;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.meta {
+  display: block;
+  font-size: var(--font-sm);
+  font-weight: 400;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  padding-left: 70px;              /* 썸네일 폭 + gap 만큼 들여쓴다 */
+}
+
+.act {
+  width: auto;
+  margin: 0;
+  min-height: var(--tap-min);
+  padding: 11px 18px;
+  font-size: var(--font-sm);
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  border-color: transparent;
+}
+
+.go {
+  background: var(--accent-solid);
+  color: #fff;
+}

@@ -1,0 +1,169 @@
+/* 지도 + 바텀시트 구조.
+ * 지도는 화면 끝까지 채우고, 그 위에 뜬 것들만 그림자를 가진다. */
+
+.stage {
+  position: relative;
+  margin: -16px -16px 0;           /* main 패딩을 상쇄해 화면 끝까지 */
+  height: 55vh;
+  min-height: 300px;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  background: var(--surface);
+}
+
+.canvas :global(.leaflet-container) {
+  font: inherit;                   /* Leaflet 자체 폰트를 쓰지 않는다 */
+  height: 100%;
+}
+
+/* 종목 칩 — 지도 위에 떠 있는 가로 스크롤 줄 */
+.floatChips {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 12px;
+  z-index: 500;                    /* Leaflet 컨트롤(400)보다 위 */
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 16px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.floatChips::-webkit-scrollbar { height: 0; }
+
+.floatChips button {
+  flex: 0 0 auto;
+  background: #fff;
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-pill);
+  padding: 11px 16px;
+  min-height: var(--tap-min);
+  font: inherit;
+  font-size: var(--font-sm);
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  box-shadow: var(--shadow-float);
+  white-space: nowrap;
+}
+
+.floatChips button[aria-pressed='true'] {
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* 타일 실패 안내 — 지도 위에 겹쳐 띄운다 */
+.tileNote {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 12px;
+  z-index: 500;
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  margin: 0;
+  box-shadow: var(--shadow-float);
+}
+
+/* ---------- 바텀시트 ---------- */
+
+.sheet {
+  position: relative;
+  z-index: 1;
+  background: #fff;
+  border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+  margin: -20px -16px 0;
+  padding: 8px 16px 16px;
+  box-shadow: var(--shadow-float);
+}
+
+/* 손잡이 */
+.handle {
+  width: 42px;
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  margin: 0 auto 14px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 1.5px solid transparent;
+  border-top-color: var(--line);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin: 0 -12px;
+  cursor: pointer;
+}
+
+.row:first-of-type { border-top-color: transparent; }
+
+.rowIcon {
+  flex: 0 0 44px;
+  height: 44px;
+  border-radius: 13px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rowIcon svg { width: 22px; height: 22px; }
+
+.rowBody { flex: 1; min-width: 0; }
+
+.rowName {
+  display: block;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.rowMeta {
+  display: block;
+  font-size: var(--font-sm);
+  font-weight: 400;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+/* 시트 하단 액션 — 풀폭 CTA + 좌측 원형 위성 버튼 */
+.sticky {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  padding: 12px 0 4px;
+  margin-top: 8px;
+}
+
+.satellite {
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 0;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.satellite svg { width: 22px; height: 22px; }
+
+.sticky .cta { flex: 1; margin: 0; }

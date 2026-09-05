@@ -1,0 +1,54 @@
+# ───────────── 비밀 ─────────────
+# 공공데이터포털 인증키. 절대 올리지 않는다.
+# 없으면 환경 배지만 안 뜨고 추천·지도·기록은 정상 동작한다.
+.env
+*.env
+!.env.example
+
+# ───────────── 파이썬 ─────────────
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# ───────────── 노드 ─────────────
+node_modules/
+web/ui/dist/
+*.local
+npm-debug.log*
+
+# ───────────── 재현 전용 (런타임에 불필요) ─────────────
+# 클러스터링 단계. 파라미터를 다시 만들 때만 쓴다 — 220MB.
+# 런타임에 필요한 것은 assignment/params/ 와 recommendation/data/ 뿐이다.
+analysis/
+# 내려받은 원본 zip — 28MB
+archive/
+# 배포용 zip 묶음. 안에 .env 사본이 들어 있어 더욱 올리면 안 된다.
+_dist/
+
+# ───────────── 실행 산출물 ─────────────
+logs/
+*.jsonl
+
+# ───────────── 대용량 문서 ─────────────
+# 발표·보고서 바이너리. 필요하면 Releases 나 별도 저장소로.
+*.pdf
+*.pptx
+*.docx
+*.hwpx
+*.xlsx
+*.zip
+docs/img/
+docs/발표_svg/
+docs/발표_그림/
+
+# ───────────── OS ─────────────
+Thumbs.db
+.DS_Store
+
+# ───────────── Claude Code 로컬 상태 ─────────────
+# 개인 권한 허용 목록과 런타임 잠금. 공유 설정(settings.json)만 올린다.
+.claude/settings.local.json
+.claude/scheduled_tasks.lock

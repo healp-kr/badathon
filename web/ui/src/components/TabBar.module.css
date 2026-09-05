@@ -1,0 +1,51 @@
+.tabs {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  display: flex;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  background: #fff;
+  border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tabs button {
+  flex: 1;
+  min-height: 68px;
+  padding: 10px 4px 12px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: var(--font-tab);
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.tabs button svg { width: 26px; height: 26px; }
+
+/* 활성 — 아이콘은 채움, 라벨은 초록 */
+.tabs button[aria-current='true'] { color: var(--accent-ink); }
+
+/* 배지 슬롯 — 아이콘 우상단 */
+.slot {
+  position: relative;
+  display: inline-flex;
+}
+
+.dot {
+  position: absolute;
+  top: -1px;
+  right: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--danger);
+  box-shadow: 0 0 0 2px #fff;
+}

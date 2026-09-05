@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python test_serve.py)",
+      "Bash(python assignment/test_assign.py)",
+      "Bash(python recommendation/demo.py)",
+      "Bash(python demo_layers.py)",
+      "Bash(python web/schema.py)",
+      "Bash(python api/locate.py)",
+      "Bash(python api/context.py)",
+      "Bash(python geo/facility.py)",
+      "Bash(python geo/crowding.py)"
+    ]
+  }
+}
