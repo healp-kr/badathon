@@ -123,6 +123,10 @@ jobs:
 
   deploy:
     needs: build
+    # 조건을 명시해야 한다. 기본 조건 success() 는 의존 사슬 **전체**를 보므로,
+    # push 에서 context 가 건너뛰어진 것만으로 deploy 까지 건너뛰어 버린다
+    # (첫 배포가 정확히 이렇게 조용히 빠졌다). build 결과만 본다.
+    if: needs.build.result == 'success'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
