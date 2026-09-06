@@ -12,10 +12,12 @@ import SportDetail from './sport/SportDetail';
 import RecordSheet from './records/RecordSheet';
 import Locked from './Locked';
 import { useApp } from '../state/AppContext';
+import { useRecords } from '../state/useRecords';
 import type { 갈래, 추천종목 } from '../api/types';
 
 export default function Result() {
-  const { result, setTab } = useApp();
+  const { result, sports, setTab } = useApp();
+  const { doneToday } = useRecords(sports);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [detail, setDetail] = useState<{ bucket: 갈래; item: 추천종목 } | null>(null);
   const [logging, setLogging] = useState<추천종목 | null>(null);
@@ -49,6 +51,7 @@ export default function Result() {
         items={result.익숙한운동}
         bucket="익숙한운동"
         selected={selected}
+        doneToday={doneToday}
         onOpen={open}
         onFind={find}
         onDid={(_b, i) => setLogging(i)}
@@ -58,6 +61,7 @@ export default function Result() {
         items={result.새로운운동}
         bucket="새로운운동"
         selected={selected}
+        doneToday={doneToday}
         onOpen={open}
         onFind={find}
         onDid={(_b, i) => setLogging(i)}
@@ -144,12 +148,13 @@ interface BucketProps {
   items: 추천종목[];
   bucket: 갈래;
   selected: string | null;
+  doneToday(sport: string): boolean;
   onOpen(bucket: 갈래, item: 추천종목): void;
   onFind(sport: string): void;
   onDid(bucket: 갈래, item: 추천종목): void;
 }
 
-function Bucket({ title, items, bucket, selected, onOpen, onFind, onDid }: BucketProps) {
+function Bucket({ title, items, bucket, selected, doneToday, onOpen, onFind, onDid }: BucketProps) {
   if (!items?.length) return null;
   return (
     <div className="card">
@@ -160,6 +165,7 @@ function Bucket({ title, items, bucket, selected, onOpen, onFind, onDid }: Bucke
           item={item}
           bucket={bucket}
           selected={selected === item.종목}
+          done={doneToday(item.종목)}
           onOpen={onOpen}
           onFind={onFind}
           onDid={onDid}

@@ -5,10 +5,12 @@
  */
 import { useEffect, useState } from 'react';
 import Sheet from '../../components/Sheet';
+import RecordSheet from '../records/RecordSheet';
 import { fetchFacilities } from '../../api/endpoints';
 import { optional } from '../../api/client';
 import { distance, plain } from '../../lib/format';
 import { useApp } from '../../state/AppContext';
+import { useRecords } from '../../state/useRecords';
 import type { FacilitiesResponse, 갈래, 추천종목 } from '../../api/types';
 
 interface Props {
@@ -18,9 +20,14 @@ interface Props {
 }
 
 export default function SportDetail({ item, onClose }: Props) {
-  const { district } = useApp();
+  const { district, sports } = useApp();
+  const { doneToday } = useRecords(sports);
   const [facilities, setFacilities] = useState<FacilitiesResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  /* 상세를 보다가 바로 기록할 수 있어야 한다 — 시설 정보까지 보고 나가서
+     운동 탭을 다시 찾아 들어가는 건 마찰이다. 그래서 RecordSheet 를 이 시트
+     위에 형제로 겹쳐 연다(둘 다 닫아도, 상세만 남겨도 되게). */
+  const [logging, setLogging] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -39,59 +46,67 @@ export default function SportDetail({ item, onClose }: Props) {
   const booking = facilities?.예약 ?? [];
 
   return (
-    <Sheet onClose={onClose} label={`${item.종목} 상세`}>
-      <h2>{item.종목}</h2>
+    <>
+      <Sheet onClose={onClose} label={`${item.종목} 상세`}>
+        <h2>{item.종목}</h2>
 
-      <p>
-        {item.강도 && item.강도 !== '미확인' && <span className="badge">강도 {item.강도}</span>}
-        {item.실내외 && <span className="badge">{item.실내외}</span>}
-        {item.고령적합 && <span className="badge">고령 {item.고령적합}</span>}
-      </p>
-
-      {item.강도주의 && (
-        <p className="note warn">
-          <span className="badge warn">주의</span>
-          {item.강도주의}
+        <p>
+          {doneToday(item.종목) && <span className="badge">오늘 완료</span>}
+          {item.강도 && item.강도 !== '미확인' && <span className="badge">강도 {item.강도}</span>}
+          {item.실내외 && <span className="badge">{item.실내외}</span>}
+          {item.고령적합 && <span className="badge">고령 {item.고령적합}</span>}
         </p>
-      )}
 
-      {item.이유 && <p className="note">{plain(item.이유)}</p>}
-      {item.처방 && <p className="note">{item.처방}</p>}
-      {item.근거 && <p className="note fine">{item.근거}</p>}
+        <button className="primary" type="button" onClick={() => setLogging(true)}>
+          오늘 이 운동 했어요
+        </button>
 
-      {item.부담부위?.length ? (
-        <p className="note">부담이 갈 수 있는 곳 — {item.부담부위.join(' · ')}</p>
-      ) : null}
+        {item.강도주의 && (
+          <p className="note warn">
+            <span className="badge warn">주의</span>
+            {item.강도주의}
+          </p>
+        )}
 
-      <h3>어디서 하나요</h3>
-      {loading ? (
-        <p className="loading">주변을 찾고 있어요…</p>
-      ) : facilities?.매칭없음 ? (
-        <p className="note">
-          {facilities.사유 || '이 종목은 시설 매핑에 없어요'}
-        </p>
-      ) : nearby.length === 0 && booking.length === 0 ? (
-        <p className="note">가까운 곳을 찾지 못했어요</p>
-      ) : (
-        <>
-          {booking.length > 0 && (
-            <>
-              <p className="note">예약 가능</p>
-              {booking.slice(0, 3).map((f, i) => (
-                <FacilityLine key={`${f.시설명}-${i}`} name={f.시설명} meters={f.거리m} link={f.지도} />
-              ))}
-            </>
-          )}
-          {nearby.slice(0, 5).map((f, i) => (
-            <FacilityLine key={`${f.시설명}-${i}`} name={f.시설명} meters={f.거리m} link={f.지도} />
-          ))}
-        </>
-      )}
+        {item.이유 && <p className="note">{plain(item.이유)}</p>}
+        {item.처방 && <p className="note">{item.처방}</p>}
+        {item.근거 && <p className="note fine">{item.근거}</p>}
 
-      {facilities?.확인필요 && (
-        <p className="note fine">시설 정보가 일부 누락되어 있어요. 방문 전에 확인해 주세요.</p>
-      )}
-    </Sheet>
+        {item.부담부위?.length ? (
+          <p className="note">부담이 갈 수 있는 곳 — {item.부담부위.join(' · ')}</p>
+        ) : null}
+
+        <h3>어디서 하나요</h3>
+        {loading ? (
+          <p className="loading">주변을 찾고 있어요…</p>
+        ) : facilities?.매칭없음 ? (
+          <p className="note">
+            {facilities.사유 || '이 종목은 시설 매핑에 없어요'}
+          </p>
+        ) : nearby.length === 0 && booking.length === 0 ? (
+          <p className="note">가까운 곳을 찾지 못했어요</p>
+        ) : (
+          <>
+            {booking.length > 0 && (
+              <>
+                <p className="note">예약 가능</p>
+                {booking.slice(0, 3).map((f, i) => (
+                  <FacilityLine key={`${f.시설명}-${i}`} name={f.시설명} meters={f.거리m} link={f.지도} />
+                ))}
+              </>
+            )}
+            {nearby.slice(0, 5).map((f, i) => (
+              <FacilityLine key={`${f.시설명}-${i}`} name={f.시설명} meters={f.거리m} link={f.지도} />
+            ))}
+          </>
+        )}
+
+        {facilities?.확인필요 && (
+          <p className="note fine">시설 정보가 일부 누락되어 있어요. 방문 전에 확인해 주세요.</p>
+        )}
+      </Sheet>
+      {logging && <RecordSheet sport={item.종목} onClose={() => setLogging(false)} />}
+    </>
   );
 }
 

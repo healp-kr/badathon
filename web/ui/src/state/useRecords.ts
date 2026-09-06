@@ -217,6 +217,8 @@ export interface RecordsApi {
   /** 종목 마스터가 정하는 기본 강도. 화면이 강도를 하드코딩하지 않게 한다. */
   intensityOf(sport: string): 강도 | null;
   isStrength(sport: string): boolean;
+  /** 오늘(KST) 이 종목을 이미 기록했는지. "오늘"의 기준을 화면마다 따로 정하지 않게 여기서만 계산한다. */
+  doneToday(sport: string): boolean;
 }
 
 /** 종목 마스터를 넘겨야 강도·근력 여부를 알 수 있다 — 출처는 `sport_master.csv` 하나다. */
@@ -249,10 +251,18 @@ export function useRecords(sports: 종목마스터[]): RecordsApi {
     setRecords(getSnapshot().filter((r) => r.id !== id));
   }, []);
 
+  const doneToday = useCallback(
+    (sport: string) => {
+      const today = kstIso(Date.now()).slice(0, 10);
+      return records.some((r) => r.종목 === sport && r.일시.slice(0, 10) === today);
+    },
+    [records],
+  );
+
   const stats = useMemo(
     () => computeStats(records, isStrength),
     [records, isStrength],
   );
 
-  return { records, stats, add, remove, intensityOf, isStrength };
+  return { records, stats, add, remove, intensityOf, isStrength, doneToday };
 }

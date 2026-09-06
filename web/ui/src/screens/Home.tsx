@@ -19,7 +19,7 @@ import type { 갈래, 추천종목 } from '../api/types';
 
 export default function Home() {
   const { result, sports, setTab } = useApp();
-  const { stats } = useRecords(sports);
+  const { stats, doneToday } = useRecords(sports);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [detail, setDetail] = useState<{ bucket: 갈래; item: 추천종목 } | null>(null);
 
@@ -58,6 +58,7 @@ export default function Home() {
                 key={item.종목}
                 item={item}
                 bucket="익숙한운동"
+                done={doneToday(item.종목)}
                 onSelect={select}
               />
             ))}
@@ -79,6 +80,7 @@ export default function Home() {
                 key={item.종목}
                 item={item}
                 bucket="새로운운동"
+                done={doneToday(item.종목)}
                 onSelect={select}
               />
             ))}
