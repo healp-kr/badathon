@@ -14,12 +14,13 @@ import styles from './SportTile.module.css';
 interface Props {
   item: 추천종목;
   bucket: 갈래;
+  done?: boolean;
   onSelect(bucket: 갈래, item: 추천종목): void;
 }
 
-export default function SportTile({ item, bucket, onSelect }: Props) {
+export default function SportTile({ item, bucket, done = false, onSelect }: Props) {
   const badge = item.강도 && item.강도 !== '미확인' ? `강도 ${item.강도}` : '';
-  const caption = [badge, item.실내외].filter(Boolean).join(' · ');
+  const caption = [done ? '오늘 완료' : '', badge, item.실내외].filter(Boolean).join(' · ');
 
   return (
     <button

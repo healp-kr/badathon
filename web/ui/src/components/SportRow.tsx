@@ -15,6 +15,7 @@ interface Props {
   item: 추천종목;
   bucket: 갈래;
   selected?: boolean;
+  done?: boolean;
   onOpen(bucket: 갈래, item: 추천종목): void;
   onFind(sport: string): void;
   onDid(bucket: 갈래, item: 추천종목): void;
@@ -24,6 +25,7 @@ export default function SportRow({
   item,
   bucket,
   selected = false,
+  done = false,
   onOpen,
   onFind,
   onDid,
@@ -60,6 +62,7 @@ export default function SportRow({
           {meta && <span className={`${styles.meta} clamp2`}>{meta}</span>}
 
           <span className={styles.chips}>
+            {done && <span className="badge">오늘 완료</span>}
             {item.환경배지 && <span className="badge env">오늘 {item.환경배지}</span>}
             {intensity && <span className="badge">{intensity}</span>}
             {item.실내외 && <span className="badge">{item.실내외}</span>}
